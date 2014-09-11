@@ -1,8 +1,14 @@
 module Promotions
   class RedPencilPromotion
 
-    def is_applied?
-      true
+    MINIMUM_PRICE_REDUCTION = -5.00
+    MAXIMUM_PRICE_REDUCTION = -30.00
+
+    def is_applied?(price_change)
+      price_change.percent_changed.between?(
+        MAXIMUM_PRICE_REDUCTION,
+        MINIMUM_PRICE_REDUCTION
+      )
     end
 
   end

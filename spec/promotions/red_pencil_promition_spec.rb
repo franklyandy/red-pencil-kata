@@ -9,18 +9,34 @@ describe RedPencilPromotion do
 
   describe 'is_applied?' do
 
-    When(:result) { promotion.is_applied? }
+    Given(:price_change) {
+      object_double 'PriceChange', {
+        percent_changed: percent_changed
+      }
+    }
+    When(:result) { promotion.is_applied? price_change }
 
     describe 'when the original price has been stable for at least 30 days' do
 
-      describe 'and the price has been reduced by at least 5% but not more than 30%' do
-        Then { result == true }
-      end
+      examples = [
+        { price_change_percent: -4.99,  promotion_is_applied?: false },
+        { price_change_percent: -5.00,  promotion_is_applied?: true },
+        { price_change_percent: -5.01,  promotion_is_applied?: true },
+        { price_change_percent: -29.99, promotion_is_applied?: true },
+        { price_change_percent: -30.00, promotion_is_applied?: true },
+        { price_change_percent: -30.01, promotion_is_applied?: false },
+      ]
 
-      describe 'and the price has been reduced by less than 5%' do
-      end
+      examples.each do |example|
 
-      describe 'and the price has been reduced by more than 30%' do
+        describe "and the price is changed by #{'%.02f' % example[:price_change_percent]}%" do
+          Given(:percent_changed) { example[:price_change_percent] }
+
+          describe "then the promotion should#{' not' unless example[:promotion_is_applied?]} be applied" do
+            Then { result == example[:promotion_is_applied?] }
+          end
+
+        end
       end
 
     end

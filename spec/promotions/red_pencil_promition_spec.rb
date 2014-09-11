@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'promotions/red_pencil_promotion'
 require 'timecop'
 

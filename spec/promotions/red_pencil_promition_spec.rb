@@ -45,7 +45,7 @@ describe RedPencilPromotion do
 
     end
 
-    describe 'when the original price has not beeen stable for at least 30 days' do
+    describe 'when the original price has not been stable for at least 30 days' do
       Given(:percent_changed) {
         examples.find { |example|
           example[:promotion_is_applied?] == true

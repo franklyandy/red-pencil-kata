@@ -15,7 +15,7 @@ describe RedPencilPromotion do
     { price_change_percent: -30.01, promotion_is_applied?: false },
   ]
 
-  Given(:promotion) { RedPencilPromotion.new }
+  Given(:promotion) { RedPencilPromotion.new price_change }
 
   describe 'is_applied?' do
 
@@ -26,7 +26,7 @@ describe RedPencilPromotion do
         last_changed: last_changed,
       }
     }
-    When(:result) { promotion.is_applied? price_change }
+    When(:result) { promotion.is_applied? }
 
     describe 'when the original price has been stable for at least 30 days' do
       Given(:last_changed) { Date.today - 30 }

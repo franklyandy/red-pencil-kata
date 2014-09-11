@@ -1,31 +1,35 @@
 require 'spec_helper'
 require 'promotions/red_pencil_promotion'
+require 'timecop'
 
 include Promotions
 
 describe RedPencilPromotion do
 
+  examples = [
+    { price_change_percent: -4.99,  promotion_is_applied?: false },
+    { price_change_percent: -5.00,  promotion_is_applied?: true },
+    { price_change_percent: -5.01,  promotion_is_applied?: true },
+    { price_change_percent: -29.99, promotion_is_applied?: true },
+    { price_change_percent: -30.00, promotion_is_applied?: true },
+    { price_change_percent: -30.01, promotion_is_applied?: false },
+  ]
+
   Given(:promotion) { RedPencilPromotion.new }
 
   describe 'is_applied?' do
 
+    Given { Timecop.freeze(Time.new(2014, 1, 1, 7, 0, 0)) }
     Given(:price_change) {
       object_double 'PriceChange', {
-        percent_changed: percent_changed
+        percent_changed: percent_changed,
+        last_changed: last_changed,
       }
     }
     When(:result) { promotion.is_applied? price_change }
 
     describe 'when the original price has been stable for at least 30 days' do
-
-      examples = [
-        { price_change_percent: -4.99,  promotion_is_applied?: false },
-        { price_change_percent: -5.00,  promotion_is_applied?: true },
-        { price_change_percent: -5.01,  promotion_is_applied?: true },
-        { price_change_percent: -29.99, promotion_is_applied?: true },
-        { price_change_percent: -30.00, promotion_is_applied?: true },
-        { price_change_percent: -30.01, promotion_is_applied?: false },
-      ]
+      Given(:last_changed) { Date.today - 30 }
 
       examples.each do |example|
 
@@ -42,6 +46,13 @@ describe RedPencilPromotion do
     end
 
     describe 'when the original price has not beeen stable for at least 30 days' do
+      Given(:percent_changed) {
+        examples.find { |example|
+          example[:promotion_is_applied?] == true
+        }[:price_change_percent]
+      }
+      Given(:last_changed) { Date.today - 29 }
+      Then { result == false }
     end
 
   end

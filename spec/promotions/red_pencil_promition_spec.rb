@@ -1,9 +1,7 @@
 require 'promotions/red_pencil_promotion'
 require 'timecop'
 
-include Promotions
-
-describe RedPencilPromotion do
+describe Promotions::RedPencilPromotion do
 
   examples = [
     { price_change_percent: -4.99,  promotion_is_applied?: false },
@@ -14,10 +12,9 @@ describe RedPencilPromotion do
     { price_change_percent: -30.01, promotion_is_applied?: false },
   ]
 
-  Given(:promotion) { RedPencilPromotion.new price_change }
+  Given(:promotion) { Promotions::RedPencilPromotion.new price_change }
 
   describe 'is_applied?' do
-
     Given { Timecop.freeze(Time.new(2014, 1, 1, 7, 0, 0)) }
     Given(:price_change) {
       object_double 'PriceChange', {

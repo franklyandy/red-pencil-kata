@@ -8,7 +8,7 @@ module Promotions
       @price_change = price_change
     end
 
-    def is_applied?
+    def is_allowed?
       @price_change.last_changed <= Date.today - 30 &&
       @price_change.percent_changed.between?(
         MAXIMUM_PRICE_REDUCTION,

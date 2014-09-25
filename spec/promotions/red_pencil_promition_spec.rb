@@ -14,7 +14,7 @@ describe Promotions::RedPencilPromotion do
 
   Given(:promotion) { Promotions::RedPencilPromotion.new price_change }
 
-  describe 'is_applied?' do
+  describe 'is_allowed?' do
     Given { Timecop.freeze(Time.new(2014, 1, 1, 7, 0, 0)) }
     Given(:price_change) {
       object_double 'PriceChange', {
@@ -22,7 +22,7 @@ describe Promotions::RedPencilPromotion do
         last_changed: last_changed,
       }
     }
-    When(:result) { promotion.is_applied? }
+    When(:result) { promotion.is_allowed? }
 
     describe 'when the original price has been stable for at least 30 days' do
       Given(:last_changed) { Date.today - 30 }
